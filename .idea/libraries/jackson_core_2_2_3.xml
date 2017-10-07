@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="jackson-core-2.2.3">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Documents/School/Automaattestimine/jackson-core-2.2.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$USER_HOME$/Documents/School/Automaattestimine/jackson-databind-master/src/main/java" />
+      <root url="file://$USER_HOME$/Documents/School/Automaattestimine/jackson-databind-master/src/test/java" />
+    </SOURCES>
+  </library>
+</component>
