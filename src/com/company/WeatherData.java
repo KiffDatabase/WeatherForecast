@@ -1,6 +1,9 @@
 package com.company;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Date;
+
 public class WeatherData {
 
     @JsonProperty("coord")
@@ -26,8 +29,8 @@ public class WeatherData {
         this.temperatures = temperatures;
     }
 
-    public Integer getDt() {
-        return dt;
+    public Date getDt() {
+        return new Date(dt * 1000L);
     }
 
     public void setDt(Integer dt) {

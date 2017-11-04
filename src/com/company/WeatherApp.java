@@ -3,8 +3,10 @@ package com.company;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.File;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,34 +15,37 @@ import java.util.List;
 public class WeatherApp {
     WeatherData latestWeather = new WeatherData();
     List<WeatherData> forecastWeather = new ArrayList<>();
+    List<String> outputList = new ArrayList<>();
 
 
-    public WeatherApp() throws IOException, ClassNotFoundException {
-        latestWeather = getCurrentWeatherData("C:\\Users\\karlivar.pajula\\IdeaProjects\\WeatherForecast\\src\\com\\company\\CurrentWeatherData.json");
-        forecastWeather = getForecastData("C:\\Users\\karlivar.pajula\\IdeaProjects\\WeatherForecast\\src\\com\\company\\FutureWeatherData.json");
+    public WeatherApp(String cityName) throws IOException, ClassNotFoundException {
+        outputList.add(cityName + " Weather Forecast: ");
+        latestWeather = getCurrentWeatherData("http://api.openweathermap.org/data/2.5/weather?q="+cityName+"&appid=fd012c6db32058a281c3a2f244beee95");
+        forecastWeather = getForecastData("http://api.openweathermap.org/data/2.5/forecast?q="+cityName+"&appid=fd012c6db32058a281c3a2f244beee95");
     }
 
     public void ShowWeatherForecastInfo() {
-        int lastUpdateTime = latestWeather.getDt();
+        Date lastUpdateTime = latestWeather.getDt();
         Date currentTime = new Date();
         double currentTemp = latestWeather.getTemperatures().getTemp();
         double longitudeCoordinate = latestWeather.getCoord().getLon();
         double latitudeCoordinate = latestWeather.getCoord().getLat();
+        String currentTempString = "Current temperature is: " + currentTemp;
         if (IsTemperatureInReasonableRange(currentTemp)
-                && IsDataUpdated(currentTime, lastUpdateTime)
+                && IsTimeSpanLessThanOneDay(currentTime, lastUpdateTime)
                 && IsValidLatitudeCoordinate(latitudeCoordinate)
                 && IsValidLongitudeCoordinate(longitudeCoordinate)) {
-            System.out.println("Current temperature is: " + currentTemp);
-            System.out.println("Coordinates for Tallinn are: " + longitudeCoordinate + ":" + latitudeCoordinate);
+            outputList.add(currentTempString);
             printFutureTemperatures();
+
         }
     }
 
     public WeatherData getCurrentWeatherData(String pathName) throws IOException, ClassNotFoundException {
-        File jsonFile = new File(pathName);
+        URL url = new URL(pathName);
         ObjectMapper mapper = getObjectMapper();
         try {
-            return mapper.readValue(jsonFile, WeatherData.class);
+            return mapper.readValue(url, WeatherData.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,10 +57,10 @@ public class WeatherApp {
     }
 
     public List<WeatherData> getForecastData(String pathName) throws IOException, ClassNotFoundException {
-        File jsonFile = new File(pathName);
+        URL url = new URL(pathName);
         ObjectMapper mapper = getObjectMapper();
         try {
-            WeatherResponse weatherResponse = mapper.readValue(jsonFile, WeatherResponse.class);
+            WeatherResponse weatherResponse = mapper.readValue(url, WeatherResponse.class);
             return weatherResponse.getList();
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,9 +68,9 @@ public class WeatherApp {
         return null;
     }
 
-    public boolean IsDataUpdated(Date currentTime, int lastUpdateTime) {
-        Date lastUpdate = new Date(lastUpdateTime * 1000L);
-        if (((currentTime.getTime()) - (lastUpdate.getTime())) <= (3 * 60 * 60 * 1000)) {
+    public boolean IsTimeSpanLessThanOneDay(Date date, Date comparedDate) {
+        long difference = (date.getTime()) - (comparedDate.getTime());
+        if (difference <= (3 * 60 * 60 * 1000) && difference >=0) {
             return true;
         } else {
             System.out.println("Data is not updated");
@@ -76,7 +81,7 @@ public class WeatherApp {
     }
 
     public boolean IsTemperatureInReasonableRange(double temperature) {
-        // väärtused tulevad planeet Maa kõigi aegade madalaimast ja kõrgeimast temperatuurist
+        // Planet Earth lowest and highest temps
         if (temperature > -185.15 && temperature < 331.15) {
             return true;
         } else {
@@ -113,48 +118,65 @@ public class WeatherApp {
 
     public void printFutureTemperatures() {
         List<Double> temps;
+        String highTemps = "The highest temperatures for next three days temperatures are: ";
+        String lowTemps= "The lowest temperatures for next three days temperatures are: ";
         temps = getFutureTemperatures(forecastWeather, true);
-        System.out.println("The highest temperatures for next three days temperatures are: ");
+        outputList.add(highTemps);
         printForecastTemperatures((ArrayList<Double>) temps);
         temps = getFutureTemperatures(forecastWeather, false);
-        System.out.println("The lowest temperatures for next three days temperatures are: ");
+        outputList.add(lowTemps);
         printForecastTemperatures((ArrayList<Double>) temps);
     }
 
     public List<Double> getFutureTemperatures(List<WeatherData> forecastWeather, boolean isHighTemp) {
         List<Double> temps = new ArrayList<>();
         Date currentTime = new Date();
-        for (int i = 0; i < forecastWeather.size(); i++) {
-            WeatherData weatherData = forecastWeather.get(i);
-            Date timeToCheck = new Date(weatherData.getDt() * 1000L);
-            long dayDifference = (timeToCheck).getTime() - currentTime.getTime();
-            Temperatures temperatures = weatherData.getTemperatures();
-            int dayInMilliSec = 60 * 60 * 60 * 1000;
-            boolean isWithinTimeRange = dayDifference >= dayInMilliSec && dayDifference <= (3 * dayInMilliSec) && timeToCheck.getHours() == 12;
-            boolean isDataUpdated = IsDataUpdated(new Date(), weatherData.getDt());
-            double tempMax = temperatures.getTempMax();
-            double tempMin = temperatures.getTempMin();
-            if (isWithinTimeRange
-                    && isDataUpdated
-                    && isHighTempHigherThanLowest(tempMax, tempMin)
-                    && IsTemperatureInReasonableRange(tempMax)
-                    && IsTemperatureInReasonableRange(tempMin)) {
-                temps.add(isHighTemp ? tempMax : tempMin);
-            }
-
+        for (int i = 0; i < forecastWeather.size()  && temps.size() <3 ; i++) {
+                WeatherData weatherData = forecastWeather.get(i);
+                Date timeToCheck = weatherData.getDt();
+                long dayDifference = Math.abs((timeToCheck).getDate() - currentTime.getDate());
+                Temperatures temperatures = weatherData.getTemperatures();
+                boolean isWithinTimeRange = (dayDifference >= 1 && timeToCheck.getHours() == 14);
+                //boolean isDataUpdated = IsTimeSpanLessThanOneDay(new Date(), weatherData.getDt());
+                double tempMax = temperatures.getTempMax();
+                double tempMin = temperatures.getTempMin();
+                if (isWithinTimeRange
+                        && isHighTempHigherThanLowest(tempMax, tempMin)
+                        && IsTemperatureInReasonableRange(tempMax)
+                        && IsTemperatureInReasonableRange(tempMin)
+                        ) {
+                    temps.add(isHighTemp ? tempMax : tempMin);
+                }
         }
+        //System.out.println(temps);
         return temps;
     }
 
     public void printForecastTemperatures(ArrayList<Double> temperatures) {
+
         DecimalFormat df = new DecimalFormat("#.##");
+        String firstDay = "First Day: " + df.format(temperatures.get(0).doubleValue());
+        String secondDay = "Second Day: " + df.format(temperatures.get(0).doubleValue());
+        String thirdDay = "Third Day: " + df.format(temperatures.get(0).doubleValue());
         if(temperatures.size()==3){
-            System.out.println("First Day: " + df.format(temperatures.get(0).doubleValue()));
-            System.out.println("Second Day: " + df.format(temperatures.get(1).doubleValue()));
-            System.out.println("Third Day: " + df.format(temperatures.get(2).doubleValue()));
+            outputList.add(firstDay);
+            outputList.add(secondDay);
+            outputList.add(thirdDay);
         } else{
             System.out.println("Does not have enough data");
         }
     }
+
+    public void saveForecastToFile() throws IOException {
+        FileWriter writer = new FileWriter("C:\\Users\\karlivar.pajula\\Documents\\School\\Automaattestimine\\output.txt");
+        BufferedWriter bw = new BufferedWriter(writer);
+        for(String s : outputList) {
+            System.out.println(s);
+            bw.write(s + System.getProperty("line.separator"));
+        }
+        bw.close();
+    }
+
+
 }
 
