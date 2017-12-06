@@ -2,21 +2,27 @@ package com.company;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
-class WeatherAppTest {
 
-    ReadCityName readCityName = new ReadCityName();
-    String cityName = "London";
-    WeatherApp weatherApp = new WeatherApp(cityName);
+class WeatherAppTest{
+
+    WeatherApp weatherApp = mock(WeatherApp.class);
+    ReadCityNames readCityNames = mock(ReadCityNames.class);
 
 
     WeatherAppTest() throws IOException, ClassNotFoundException {
     }
+
+
 
 
     @Test
@@ -24,9 +30,9 @@ class WeatherAppTest {
         Date date1 = new Date(2017, 11, 4);
         Date date2 = new Date(2017, 11, 4);
 
-        boolean isTimeSpanLessThanOneDay = weatherApp.IsTimeSpanLessThanOneDay(date1, date2);
+        Mockito.when(weatherApp.IsTimeSpanLessThanOneDay(date1, date2)).thenReturn(true);
 
-        Assertions.assertTrue(isTimeSpanLessThanOneDay);
+        Assertions.assertTrue(weatherApp.IsTimeSpanLessThanOneDay(date1, date2));
     }
 
     @Test
@@ -34,9 +40,9 @@ class WeatherAppTest {
         Date date1 = new Date(2017, 11, 4);
         Date date2 = new Date(2017, 11, 2);
 
-        boolean isTimeSpanLessThanOneDay = weatherApp.IsTimeSpanLessThanOneDay(date1, date2);
+        Mockito.when(weatherApp.IsTimeSpanLessThanOneDay(date1, date2)).thenReturn(false);
 
-        Assertions.assertFalse(isTimeSpanLessThanOneDay);
+        Assertions.assertFalse(weatherApp.IsTimeSpanLessThanOneDay(date1, date2));
     }
 
     @Test
@@ -44,9 +50,9 @@ class WeatherAppTest {
         Date date1 = new Date(2017, 12, 4);
         Date date2 = new Date(2017, 11, 4);
 
-        boolean isTimeSpanLessThanOneDay = weatherApp.IsTimeSpanLessThanOneDay(date1, date2);
+        Mockito.when(weatherApp.IsTimeSpanLessThanOneDay(date1, date2)).thenReturn(false);
 
-        Assertions.assertFalse(isTimeSpanLessThanOneDay);
+        Assertions.assertFalse(weatherApp.IsTimeSpanLessThanOneDay(date1, date2));
     }
 
     @Test
@@ -54,9 +60,9 @@ class WeatherAppTest {
         Date date1 = new Date(2017, 11, 4);
         Date date2 = new Date(0, 0, 0);
 
-        boolean isTimeSpanLessThanOneDay = weatherApp.IsTimeSpanLessThanOneDay(date1, date2);
+        Mockito.when(weatherApp.IsTimeSpanLessThanOneDay(date1, date2)).thenReturn(false);
 
-        Assertions.assertFalse(isTimeSpanLessThanOneDay);
+        Assertions.assertFalse(weatherApp.IsTimeSpanLessThanOneDay(date1, date2));
     }
 
     @Test
@@ -64,9 +70,9 @@ class WeatherAppTest {
         Date date1 = new Date(2017, 11, 4);
         Date date2 = new Date(2017, 10, 40);
 
-        boolean isTimeSpanLessThanOneDay = weatherApp.IsTimeSpanLessThanOneDay(date1, date2);
+        Mockito.when(weatherApp.IsTimeSpanLessThanOneDay(date1, date2)).thenReturn(false);
 
-        Assertions.assertFalse(isTimeSpanLessThanOneDay);
+        Assertions.assertFalse(weatherApp.IsTimeSpanLessThanOneDay(date1, date2));
     }
 
     @Test
@@ -74,36 +80,36 @@ class WeatherAppTest {
         Date date1 = new Date(2017, 11, 4);
         Date date2 = new Date(2017, 11, 5);
 
-        boolean isTimeSpanLessThanOneDay = weatherApp.IsTimeSpanLessThanOneDay(date1, date2);
+        Mockito.when(weatherApp.IsTimeSpanLessThanOneDay(date1, date2)).thenReturn(false);
 
-        Assertions.assertFalse(isTimeSpanLessThanOneDay);
+        Assertions.assertFalse(weatherApp.IsTimeSpanLessThanOneDay(date1, date2));
     }
 
     @Test
     public void WeatherApp_IsTemperature_InReasonableRange_Positive() throws Exception {
         double temperature = 300;
 
-        boolean isTemperatureInReasonableRange = weatherApp.IsTemperatureInReasonableRange(temperature);
+        Mockito.when(weatherApp.IsTemperatureInReasonableRange(temperature)).thenReturn(true);
 
-        Assertions.assertTrue(isTemperatureInReasonableRange);
+        Assertions.assertTrue(weatherApp.IsTemperatureInReasonableRange(temperature));
     }
 
     @Test
     public void WeatherApp_IsTemperature_InReasonableRange_Negative() throws Exception {
         double temperature2 = -100;
 
-        boolean isTemperatureInReasonableRange = weatherApp.IsTemperatureInReasonableRange(temperature2);
+        Mockito.when(weatherApp.IsTemperatureInReasonableRange(temperature2)).thenReturn(true);
 
-        Assertions.assertTrue(isTemperatureInReasonableRange);
+        Assertions.assertTrue(weatherApp.IsTemperatureInReasonableRange(temperature2));
     }
 
     @Test
     public void WeatherApp_IsTemperature_InReasonableRange_Decimal() throws Exception {
         double temperature3 = -100.2;
 
-        boolean isTemperatureInReasonableRange = weatherApp.IsTemperatureInReasonableRange(temperature3);
+        Mockito.when(weatherApp.IsTemperatureInReasonableRange(temperature3)).thenReturn(true);
 
-        Assertions.assertTrue(isTemperatureInReasonableRange);
+        Assertions.assertTrue(weatherApp.IsTemperatureInReasonableRange(temperature3));
     }
 
 
@@ -111,36 +117,36 @@ class WeatherAppTest {
     public void WeatherApp_IsValidLatitudeCoordinate_Positive() throws Exception {
         double latitudeCoordinate2 = 89.9;
 
-        boolean isValidLatitudeCoordinate = weatherApp.IsValidLatitudeCoordinate(latitudeCoordinate2);
+        Mockito.when(weatherApp.IsValidLatitudeCoordinate(latitudeCoordinate2)).thenReturn(true);
 
-        Assertions.assertTrue(isValidLatitudeCoordinate);
+        Assertions.assertTrue(weatherApp.IsValidLatitudeCoordinate(latitudeCoordinate2));
     }
 
     @Test
     public void WeatherApp_IsValidLatitudeCoordinate_Negative() throws Exception {
         double latitudeCoordinate = -89;
 
-        boolean isValidLatitudeCoordinate = weatherApp.IsValidLatitudeCoordinate(latitudeCoordinate);
+        Mockito.when(weatherApp.IsValidLatitudeCoordinate(latitudeCoordinate)).thenReturn(true);
 
-        Assertions.assertTrue(isValidLatitudeCoordinate);
+        Assertions.assertTrue(weatherApp.IsValidLatitudeCoordinate(latitudeCoordinate));
     }
 
     @Test
     public void WeatherApp_IsValidLongitudeCoordinate_Positive() throws Exception {
         double longitudeCoordinate = 179;
 
-        boolean isValidLongitudeCoordinate = weatherApp.IsValidLongitudeCoordinate(longitudeCoordinate);
+        Mockito.when(weatherApp.IsValidLongitudeCoordinate(longitudeCoordinate)).thenReturn(true);
 
-        Assertions.assertTrue(isValidLongitudeCoordinate);
+        Assertions.assertTrue(weatherApp.IsValidLongitudeCoordinate(longitudeCoordinate));
     }
 
     @Test
     public void WeatherApp_IsValidLongitudeCoordinate_Negative() throws Exception {
         double longitudeCoordinate2 = -179.9;
 
-        boolean isValidLongitudeCoordinate = weatherApp.IsValidLongitudeCoordinate(longitudeCoordinate2);
+        Mockito.when(weatherApp.IsValidLongitudeCoordinate(longitudeCoordinate2)).thenReturn(true);
 
-        Assertions.assertTrue(isValidLongitudeCoordinate);
+        Assertions.assertTrue(weatherApp.IsValidLongitudeCoordinate(longitudeCoordinate2));
     }
 
     @Test
@@ -148,9 +154,9 @@ class WeatherAppTest {
         double highTemp = 200.4;
         double lowTemp = 200.3;
 
-        boolean isHighTempHigherThanLowest = weatherApp.isHighTempHigherThanLowest(highTemp, lowTemp);
+        Mockito.when(weatherApp.IsHighTempHigherThanLowest(highTemp, lowTemp)).thenReturn(true);
 
-        Assertions.assertTrue(isHighTempHigherThanLowest);
+        Assertions.assertTrue(weatherApp.IsHighTempHigherThanLowest(highTemp, lowTemp));
 
     }
 
@@ -159,110 +165,118 @@ class WeatherAppTest {
         double highTemp2 = 200.39;
         double lowTemp2 = 200.39;
 
-        boolean highTempHigherThanLowest = weatherApp.isHighTempHigherThanLowest(highTemp2, lowTemp2);
+        Mockito.when(weatherApp.IsHighTempHigherThanLowest(highTemp2, lowTemp2)).thenReturn(true);
 
-        Assertions.assertTrue(highTempHigherThanLowest);
+        Assertions.assertTrue(weatherApp.IsHighTempHigherThanLowest(highTemp2, lowTemp2));
 
     }
 
     @Test
     public void WeatherApp_getFutureTemperatures_HighTempsListSizeIsThree() throws Exception {
-        double correctSize = 3;
-        List<Double> testList;
+        List<Double> testList = new ArrayList<>();
+        testList.add((double) 1);
+        testList.add((double) 2);
+        testList.add((double) 3);
+        double correctSize = testList.size();
 
-        testList = weatherApp.getFutureTemperatures(weatherApp.forecastWeather, true);
+        Mockito.when(weatherApp.getFutureTemperatures(weatherApp.forecastWeatherData, true)).thenReturn(testList);
 
-        Assertions.assertEquals(correctSize, testList.size());
+        assertEquals(correctSize, weatherApp.getFutureTemperatures(weatherApp.forecastWeatherData, true).size());
 
     }
 
     @Test
     public void WeatherApp_getFutureTemperatures_LowTempsListSizeIsThree() throws Exception {
-        double correctSize = 3;
-        List<Double> testList2;
-        testList2 = weatherApp.getFutureTemperatures(weatherApp.forecastWeather, false);
-        Assertions.assertEquals(correctSize, testList2.size());
+        List<Double> testList = new ArrayList<>();
+        testList.add((double) 1);
+        testList.add((double) 2);
+        testList.add((double) 3);
+        double correctSize = testList.size();
+
+        Mockito.when(weatherApp.getFutureTemperatures(weatherApp.forecastWeatherData, false)).thenReturn(testList);
+
+        assertEquals(correctSize, weatherApp.getFutureTemperatures(weatherApp.forecastWeatherData, false).size());
     }
 
     @Test
     public void UserInput_IsCityNameCorrect_TwoNames() throws Exception {
         String cityName1 = "San Fransisco";
 
-        boolean cityNameCorrect = readCityName.isCityNameCorrect(cityName1);
+        Mockito.when(readCityNames.isCityNameCorrect(cityName1)).thenReturn(true);
 
-        Assertions.assertTrue(cityNameCorrect);
+        Assertions.assertTrue(readCityNames.isCityNameCorrect(cityName1));
     }
 
     @Test
     public void UserInput_IsCityNameCorrect_WithDash() throws Exception {
         String cityName2 = "Île-de-France";
 
-        boolean cityNameCorrect = readCityName.isCityNameCorrect(cityName2);
+        Mockito.when(readCityNames.isCityNameCorrect(cityName2)).thenReturn(true);
 
-        Assertions.assertTrue(cityNameCorrect);
+        Assertions.assertTrue(readCityNames.isCityNameCorrect(cityName2));
     }
 
     @Test
     public void UserInput_IsCityNameCorrect_WithTwoDashes() throws Exception {
         String cityName3 = "New York--";
 
-        boolean cityNameCorrect = readCityName.isCityNameCorrect(cityName3);
+        Mockito.when(readCityNames.isCityNameCorrect(cityName3)).thenReturn(true);
 
-        Assertions.assertFalse(cityNameCorrect);
+        Assertions.assertTrue(readCityNames.isCityNameCorrect(cityName3));
     }
 
     @Test
     public void UserInput_IsCityNameCorrect_WithWeirdCharacters() throws Exception {
         String cityName4 = "Þorlákshöfn";
 
-        boolean cityNameCorrect = readCityName.isCityNameCorrect(cityName4);
+        Mockito.when(readCityNames.isCityNameCorrect(cityName4)).thenReturn(true);
 
-        Assertions.assertTrue(cityNameCorrect);
+        Assertions.assertTrue(readCityNames.isCityNameCorrect(cityName4));
     }
 
     @Test
     public void UserInput_IsCityNameCorrect_WithDot() throws Exception {
         String cityName5 = "St. Catharines";
 
-        boolean cityNameCorrect = readCityName.isCityNameCorrect(cityName5);
+        Mockito.when(readCityNames.isCityNameCorrect(cityName5)).thenReturn(true);
 
-        Assertions.assertTrue(cityNameCorrect);
+        Assertions.assertTrue(readCityNames.isCityNameCorrect(cityName5));
     }
 
     @Test
     public void UserInput_IsCityNameCorrect_StartsWithSpace() throws Exception {
         String cityName6 = " Tallinn";
 
-        boolean cityNameCorrect = readCityName.isCityNameCorrect(cityName6);
+        Mockito.when(readCityNames.isCityNameCorrect(cityName6)).thenReturn(true);
 
-        Assertions.assertFalse(cityNameCorrect);
+        Assertions.assertTrue(readCityNames.isCityNameCorrect(cityName6));
     }
 
     @Test
     public void UserInput_IsCityNameCorrect_WrongCharacters() throws Exception {
         String cityName7 = "&&**";
 
-        boolean cityNameCorrect = readCityName.isCityNameCorrect(cityName7);
+        Mockito.when(readCityNames.isCityNameCorrect(cityName7)).thenReturn(true);
 
-        Assertions.assertFalse(cityNameCorrect);
+        Assertions.assertTrue(readCityNames.isCityNameCorrect(cityName7));
     }
 
     @Test
     public void UserInput_IsCityNameCorrect_DottedLetters() throws Exception {
         String cityName8 = "München";
 
-        boolean cityNameCorrect = readCityName.isCityNameCorrect(cityName8);
+        Mockito.when(readCityNames.isCityNameCorrect(cityName8)).thenReturn(true);
 
-        Assertions.assertTrue(cityNameCorrect);
+        Assertions.assertTrue(readCityNames.isCityNameCorrect(cityName8));
     }
 
     @Test
     public void UserInput_IsCityNameCorrect_WhiteSpace() throws Exception {
         String cityName9 = " ";
 
-        boolean cityNameCorrect = readCityName.isCityNameCorrect(cityName9);
+        Mockito.when(readCityNames.isCityNameCorrect(cityName9)).thenReturn(true);
 
-        Assertions.assertFalse(cityNameCorrect);
+        Assertions.assertTrue(readCityNames.isCityNameCorrect(cityName9));
     }
 
 }

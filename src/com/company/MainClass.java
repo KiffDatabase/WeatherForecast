@@ -6,12 +6,24 @@ import java.util.List;
 
 public class MainClass {
     public static void main(String [] args) throws IOException, ClassNotFoundException {
-        ReadCityName userinput = new ReadCityName();
-        String cityName = userinput.readUserInput();
-        WeatherApp weatherApp = new WeatherApp(cityName);
-        List<WeatherData> forecastWeather = new ArrayList<>();
-        weatherApp.ShowWeatherForecastInfo();
-        weatherApp.saveForecastToFile();
+        ReadCityNames reader = new ReadCityNames();
+        ExportWeatherForecast writer = new ExportWeatherForecast();
+        List<List<String>> exportedList = new ArrayList<>();
+        reader.readUserInput();
+
+        List<String> cityNames = reader.getOutputCitiesList();
+        for(String s: cityNames){
+            WeatherApp weatherApp = new WeatherApp(s);
+            weatherApp.ExportWeatherForecastInfo();
+            List<String> outputData = weatherApp.getOutputList();
+            writer.printForecastToConsole(outputData);
+            exportedList.add(outputData);
+        }
+        writer.saveForecastToFile(exportedList);
+
+
+
+
 
 
 

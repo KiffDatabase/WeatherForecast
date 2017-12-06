@@ -6,6 +6,11 @@
         <option value="$USER_HOME$/Documents/School/Automaattestimine/jackson-databind-master/pom.xml" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/src/jackson-databind-master/pom.xml" />
+      </set>
+    </option>
   </component>
   <component name="ProjectKey">
     <option name="state" value="project://e2804f05-5315-4fc6-a121-c522a6c26470" />

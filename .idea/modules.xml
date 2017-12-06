@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/WeatherForecast.iml" filepath="$PROJECT_DIR$/WeatherForecast.iml" />
-      <module fileurl="file://$USER_HOME$/Documents/School/Automaattestimine/jackson-databind-master/jackson-databind.iml" filepath="$USER_HOME$/Documents/School/Automaattestimine/jackson-databind-master/jackson-databind.iml" />
     </modules>
   </component>
 </project>

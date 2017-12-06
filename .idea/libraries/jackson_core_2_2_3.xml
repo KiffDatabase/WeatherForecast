@@ -5,8 +5,8 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="file://$USER_HOME$/Documents/School/Automaattestimine/jackson-databind-master/src/main/java" />
-      <root url="file://$USER_HOME$/Documents/School/Automaattestimine/jackson-databind-master/src/test/java" />
+      <root url="file://$PROJECT_DIR$/src/jackson-databind-master/src/main/java" />
+      <root url="file://$PROJECT_DIR$/src/jackson-databind-master/src/test/java" />
     </SOURCES>
   </library>
 </component>
